@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThinkFast – Teacher Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background decorations -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="chip chip-a">A</div>
+  <div class="chip chip-b">B</div>
+  <div class="chip chip-c">C</div>
+  <div class="chip chip-d">D</div>
+  <div class="chip chip-e">A</div>
+  <div class="chip chip-f">D</div>
+
+  <!-- Card -->
+  <div class="card">
+
+    <div class="logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-name">Think<span>Fast</span></div>
+    </div>
+    <p class="subtitle">Teacher Portal &nbsp;·&nbsp; Quiz Management System</p>
+    <div class="role-badge">🎓 Teacher Access</div>
+
+    <!-- Tabs -->
+    <div class="tab-wrap">
+      <button class="tab active" id="tab-login"  onclick="switchTab('login')">Log In</button>
+      <button class="tab"        id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Login -->
+    <div class="form-section visible" id="section-login">
+      <div class="field">
+        <label>Email Address</label>
+        <div class="field-inner">
+          <span class="icon">✉️</span>
+          <input type="email" id="login-email" placeholder="teacher@school.edu.my" autocomplete="email">
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-inner">
+          <span class="icon">🔒</span>
+          <input type="password" id="login-pass" placeholder="Enter your password" autocomplete="current-password">
+          <button class="eye-btn" type="button" onclick="togglePass('login-pass',this)">👁</button>
+        </div>
+      </div>
+      <div class="link-row"><a href="#">Forgot password?</a></div>
+      <button class="btn-submit" onclick="handleLogin()">⚡ LOG IN &amp; BUZZ IN</button>
+      <div class="bottom-note">Don't have an account? <a href="#" onclick="switchTab('signup');return false;">Sign up here</a></div>
+    </div>
+
+    <!-- Sign Up -->
+    <div class="form-section" id="section-signup">
+      <div class="field">
+        <label>Full Name</label>
+        <div class="field-inner">
+          <span class="icon">👤</span>
+          <input type="text" id="su-name" placeholder="Dr. Ahmad Fahmi" autocomplete="name">
+        </div>
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <div class="field-inner">
+          <span class="icon">✉️</span>
+          <input type="email" id="su-email" placeholder="teacher@school.edu.my" autocomplete="email">
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-inner">
+          <span class="icon">🔒</span>
+          <input type="password" id="su-pass" placeholder="Create a strong password" oninput="checkStrength(this.value)" autocomplete="new-password">
+          <button class="eye-btn" type="button" onclick="togglePass('su-pass',this)">👁</button>
+        </div>
+        <div class="strength-wrap">
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+          <div class="strength-label" id="strength-label">Password strength</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Confirm Password</label>
+        <div class="field-inner">
+          <span class="icon">🔐</span>
+          <input type="password" id="su-confirm" placeholder="Re-enter your password" autocomplete="new-password">
+          <button class="eye-btn" type="button" onclick="togglePass('su-confirm',this)">👁</button>
+        </div>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="terms">
+        <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> of ThinkFast.</label>
+      </div>
+      <button class="btn-submit" onclick="handleSignup()">🎯 CREATE TEACHER ACCOUNT</button>
+      <div class="bottom-note">Already have an account? <a href="#" onclick="switchTab('login');return false;">Log in here</a></div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function switchTab(tab) {
+      ['login','signup'].forEach(t => {
+        document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+        document.getElementById('section-'+t).classList.toggle('visible', t===tab);
+      });
+    }
+
+    function togglePass(id, btn) {
+      const input = document.getElementById(id);
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      btn.textContent = isText ? '👁' : '🙈';
+    }
+
+    function checkStrength(val) {
+      const score = [val.length>=8, /[A-Z]/.test(val), /[0-9]/.test(val), /[^A-Za-z0-9]/.test(val)].filter(Boolean).length;
+      const map = [
+        { w:'0%',   c:'transparent', t:'Password strength' },
+        { w:'25%',  c:'#ff3d5a',     t:'Weak' },
+        { w:'50%',  c:'#f9c700',     t:'Fair' },
+        { w:'75%',  c:'#3d8eff',     t:'Good' },
+        { w:'100%', c:'#1fd685',     t:'Strong 💪' },
+      ];
+      const fill = document.getElementById('strength-fill');
+      const label = document.getElementById('strength-label');
+      fill.style.width = map[score].w;
+      fill.style.background = map[score].c;
+      label.textContent = map[score].t;
+      label.style.color = map[score].c || 'var(--muted)';
+    }
+
+    function showToast(msg, isError=false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast' + (isError ? ' error' : '');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function handleLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const pass  = document.getElementById('login-pass').value;
+      if (!email || !pass)      return showToast('⚠️ Please fill in all fields!', true);
+      if (!email.includes('@')) return showToast('⚠️ Enter a valid email address!', true);
+      showToast('✅ Welcome back, Teacher! Redirecting…');
+    }
+
+    function handleSignup() {
+      const name    = document.getElementById('su-name').value.trim();
+      const email   = document.getElementById('su-email').value.trim();
+      const pass    = document.getElementById('su-pass').value;
+      const confirm = document.getElementById('su-confirm').value;
+      const terms   = document.getElementById('terms').checked;
+      if (!name||!email||!pass||!confirm) return showToast('⚠️ Please fill in all fields!', true);
+      if (!email.includes('@'))           return showToast('⚠️ Enter a valid email address!', true);
+      if (pass.length < 8)                return showToast('⚠️ Password must be at least 8 characters!', true);
+      if (pass !== confirm)               return showToast('⚠️ Passwords do not match!', true);
+      if (!terms)                         return showToast('⚠️ Please accept the Terms of Service!', true);
+      showToast('🎉 Account created! Please log in.');
+      setTimeout(() => switchTab('login'), 1200);
+    }
+  </script>
+</body>
+</html>
