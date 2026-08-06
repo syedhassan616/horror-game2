@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HOLLOWLIGHT — A Descent in Six Lamps</title>
+<meta name="description" content="A modern browser horror game: dynamic shadow-casting light, a lantern you must not let go out, and a village that has been counting to nine hundred for a hundred years.">
+<link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+<div id="app">
+
+  <canvas id="game"></canvas>
+  <div id="vignette"></div>
+  <div id="dread-tint"></div>
+  <div id="flash"></div>
+
+  <!-- ==================== HUD ==================== -->
+  <div id="hud">
+    <div id="objective">
+      <div class="eyebrow">Objective</div>
+      <div class="task" id="objective-text">&nbsp;</div>
+    </div>
+
+    <div id="chapter-tag">
+      <div class="num" id="chapter-num">Chapter One</div>
+      <div class="name" id="chapter-name">The Road to Grimhollow</div>
+    </div>
+
+    <div class="hud-corner">
+      <div class="meter" id="oil-meter">
+        <span class="label">Oil</span>
+        <span class="track"><span class="fill" id="oil-fill"></span></span>
+      </div>
+      <div class="meter" id="dread-meter">
+        <span class="label">Dread</span>
+        <span class="track"><span class="fill" id="dread-fill"></span></span>
+      </div>
+      <div class="meter" id="breath-meter">
+        <span class="label">Breath</span>
+        <span class="track"><span class="fill" id="breath-fill"></span></span>
+      </div>
+    </div>
+
+    <div id="sigils"></div>
+    <div id="lantern-state"><span id="lantern-dot"></span><span id="lantern-label">Lantern out</span></div>
+  </div>
+
+  <div id="prompt"></div>
+  <div id="subs"></div>
+  <div id="toasts"></div>
+
+  <!-- ==================== DIALOGUE ==================== -->
+  <div id="dialogue">
+    <div class="dlg-body" id="dlg-body">
+      <div class="dlg-portrait" id="dlg-portrait"></div>
+      <div>
+        <div class="dlg-name" id="dlg-name">WREN HALLOWAY</div>
+        <div class="dlg-text" id="dlg-text"></div>
+        <div class="dlg-choices" id="dlg-choices"></div>
+        <div class="dlg-next" id="dlg-next">Space / Enter &nbsp;▸</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BOOT ==================== -->
+  <div class="screen on" id="screen-boot">
+    <div class="screen-inner center">
+      <div class="boot-text">Striking a light&hellip;</div>
+    </div>
+  </div>
+
+  <!-- ==================== TITLE ==================== -->
+  <div class="screen" id="screen-title">
+    <div class="screen-inner">
+      <h1 class="title-mark">HOLLOWLIGHT</h1>
+      <div class="title-sub">A Descent in Six Lamps</div>
+      <p class="title-blurb">
+        In November 1911 the mining village of <strong>Grimhollow</strong> went dark in a single night.
+        Nine hundred people. No bodies. The harbourmaster's final entry reads:
+        <em>&ldquo;The lamps have gone out and we cannot find the man who lights them.&rdquo;</em><br><br>
+        You are <strong>Wren Halloway</strong>, hollow-mapper, sent to chart the mine before the cliff takes it.
+        You carry your grandfather's lantern. <strong>Do not let it go out.</strong>
+      </p>
+      <div class="menu">
+        <button class="btn primary" id="btn-new">Begin the Round</button>
+        <button class="btn" id="btn-continue">Continue</button>
+        <button class="btn" id="btn-howto">How to Play</button>
+        <button class="btn" id="btn-chapters">Chapter Select</button>
+        <button class="btn ghost" id="btn-settings">Settings &amp; Accessibility</button>
+        <button class="btn ghost" id="btn-credits">Story &amp; Credits</button>
+      </div>
+      <p class="warn-note">
+        Contains darkness, sustained tension, sudden loud sounds and brief flashing light.<br>
+        All of it can be reduced in <strong>Settings &amp; Accessibility</strong>. Headphones recommended.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== HOW TO PLAY ==================== -->
+  <div class="screen" id="screen-howto">
+    <div class="screen-inner">
+      <h2 class="panel-title">How to Play</h2>
+      <p class="panel-lede">
+        Hollowlight has no combat. You survive by managing three things — <b>light</b>, <b>sound</b> and <b>nerve</b> —
+        and by paying attention to what you read. Everything below is also in your Journal at any time
+        (press <kbd>Tab</kbd> in game).
+      </p>
+
+      <h3 class="sec">Controls</h3>
+      <div class="cols">
+        <div>
+          <div class="ctl-row"><span class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span class="what"><b>Move.</b> Arrow keys work too.</span></div>
+          <div class="ctl-row"><span class="keys"><kbd>Shift</kbd></span><span class="what"><b>Run.</b> Fast, and very loud.</span></div>
+          <div class="ctl-row"><span class="keys"><kbd>Ctrl</kbd></span><span class="what"><b>Creep.</b> Slow and near-silent.</span></div>
+          <div class="ctl-row"><span class="keys"><kbd>Q</kbd></span><span class="what"><b>Hold breath.</b> Silent while still. Limited.</span></div>
+          <div class="ctl-row"><span class="keys"><kbd>E</kbd></span><span class="what"><b>Interact</b> with whatever is prompted.</span></div>
+        </div>
+        <div>
+          <div class="ctl-row"><span class="keys"><kbd>L</kbd></span><span class="what"><b>Lantern on / off.</b> Burns oil while lit.</span></div>
+          <div class="ctl-row"><span class="keys"><kbd>F</kbd></span><span class="what"><b>Flare.</b> Hold for a burst that drives them back. Costs oil fast.</span></div>
+          <div class="ctl-row"><span class="keys"><kbd>R</kbd></span><span class="what"><b>Recorder.</b> Listen at a resonance point; reveals hidden chalk.</span></div>
+          <div class="ctl-row"><span class="keys"><kbd>Tab</kbd></span><span class="what"><b>Journal</b> — documents, characters, objectives, controls.</span></div>
+          <div class="ctl-row"><span class="keys"><kbd>Esc</kbd></span><span class="what"><b>Pause</b> and settings.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sec">The Three Meters</h3>
+      <div class="cols">
+        <div class="card">
+          <span class="tag oil">Oil</span>
+          <h4>Your lantern is a clock.</h4>
+          Light drains oil. Flaring drains it fast. Refill at any <b>street lamp</b> — lamps are also
+          where the game saves and where Dread bleeds away. Find oil cans in the dark places nobody wanted to go.
+          At zero oil the lantern dies, and Dread climbs with nothing to hold it.
+        </div>
+        <div class="card">
+          <span class="tag dread">Dread</span>
+          <h4>The dark gets inside.</h4>
+          Standing in darkness raises Dread. So does being seen, being hunted, and being right.
+          High Dread warps what you see and hear — <b>false doors, figures that aren't there, whispers using your name.</b>
+          Let it reach the top and Grimhollow adds you to its ledger.
+        </div>
+        <div class="card">
+          <span class="tag sound">Sound</span>
+          <h4>The Wick Children are blind.</h4>
+          They hunt by ear. Running screams your position. Gravel and standing water betray you.
+          Creeping is quiet; holding your breath while <b>standing still</b> makes you silent.
+          A flare will drive one off — it will not kill it. Nothing here kills.
+        </div>
+        <div class="card">
+          <span class="tag ghost">The Echo</span>
+          <h4>Some rooms remember.</h4>
+          At a <b>resonance point</b> the recorder plays back what happened there.
+          For a few seconds afterwards you will see the chalk marks the dead left behind —
+          most puzzle answers are written on walls you cannot normally see.
+        </div>
+      </div>
+
+      <h3 class="sec">Advice From Someone Who Went First</h3>
+      <div class="cols">
+        <div class="card"><h4>Read everything.</h4> Every code in this game is written down somewhere. Nothing needs guessing. Documents are kept forever in your Journal.</div>
+        <div class="card"><h4>Dark is a choice, not a mistake.</h4> Lantern out means no oil burned and nothing can see your glow. It also means Dread. Trade deliberately.</div>
+        <div class="card"><h4>Follow the small blue light.</h4> If you are lost, she will show you. She has been trying to help for a hundred years.</div>
+        <div class="card"><h4>Six sigils are hidden.</h4> Chalk diamonds, one per chapter, always off the obvious path. All six unlock the third ending.</div>
+      </div>
+
+      <div class="screen-actions">
+        <button class="btn primary small" id="btn-howto-play">Begin the Round</button>
+        <button class="btn small" data-back="title">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CHAPTER SELECT ==================== -->
+  <div class="screen" id="screen-chapters">
+    <div class="screen-inner">
+      <h2 class="panel-title">Chapter Select</h2>
+      <p class="panel-lede">Chapters unlock as you reach them. Jumping in grants the equipment and knowledge Wren would have by then.</p>
+      <div class="doc-list" id="chapter-list"></div>
+      <div class="screen-actions"><button class="btn small" data-back="title">Back</button></div>
+    </div>
+  </div>
+
+  <!-- ==================== SETTINGS ==================== -->
+  <div class="screen" id="screen-settings">
+    <div class="screen-inner">
+      <h2 class="panel-title">Settings &amp; Accessibility</h2>
+      <p class="panel-lede">Nothing here is a difficulty penalty. Play it the way it stays playable for you.</p>
+
+      <h3 class="sec">Presentation</h3>
+      <div class="set-row">
+        <div>Master volume<div class="desc">All sound is generated live in your browser — there are no audio files.</div></div>
+        <input type="range" id="set-volume" min="0" max="100" value="70">
+      </div>
+      <div class="set-row">
+        <div>Screen brightness<div class="desc">Raise this if the dark rooms are genuinely unreadable on your display.</div></div>
+        <input type="range" id="set-bright" min="60" max="200" value="100">
+      </div>
+      <div class="set-row">
+        <div>Text size<div class="desc">Scales all dialogue and interface text.</div></div>
+        <input type="range" id="set-text" min="85" max="150" value="100">
+      </div>
+      <div class="set-row">
+        <div>Text speed<div class="desc">How fast dialogue types out. Far right prints instantly.</div></div>
+        <input type="range" id="set-textspeed" min="1" max="10" value="6">
+      </div>
+
+      <h3 class="sec">Comfort</h3>
+      <div class="set-row">
+        <div>Reduce flashing<div class="desc">Removes lightning strobes and the flare's white bloom.</div></div>
+        <button class="switch" id="set-flash">Off</button>
+      </div>
+      <div class="set-row">
+        <div>Reduce camera shake<div class="desc">Stops the screen from breathing and lurching at high Dread.</div></div>
+        <button class="switch" id="set-shake">Off</button>
+      </div>
+      <div class="set-row">
+        <div>Hallucinations<div class="desc">When off, high Dread will not spawn figures that are not there.</div></div>
+        <button class="switch on" id="set-halluc">On</button>
+      </div>
+      <div class="set-row">
+        <div>Audio subtitles<div class="desc">Prints a description of every important sound.</div></div>
+        <button class="switch on" id="set-subs">On</button>
+      </div>
+
+      <h3 class="sec">Difficulty</h3>
+      <div class="set-row">
+        <div>Mercy mode<div class="desc">Oil lasts twice as long, Dread climbs at half speed, and the Wick Children give you a second of grace before they take you. Story and puzzles are unchanged.</div></div>
+        <button class="switch" id="set-mercy">Off</button>
+      </div>
+      <div class="set-row">
+        <div>Puzzle hints<div class="desc">Adds a Hint button to every puzzle. It tells you the method, then the answer.</div></div>
+        <button class="switch on" id="set-hints">On</button>
+      </div>
+
+      <div class="screen-actions">
+        <button class="btn small" id="btn-settings-back">Back</button>
+        <button class="btn small ghost danger" id="btn-wipe">Erase all progress</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CREDITS ==================== -->
+  <div class="screen" id="screen-credits">
+    <div class="screen-inner">
+      <h2 class="panel-title">Story &amp; Credits</h2>
+      <p class="panel-lede">Spoiler-free. The story below is the premise only — everything in the mine is yours to find.</p>
+
+      <h3 class="sec">The Premise</h3>
+      <div class="card">
+        Grimhollow kept nine hundred souls and one lamplighter. On the night of the 3rd of November 1911
+        every lamp in the village went out at once, and by morning there was nobody left to complain about it.
+        No struggle. No bodies. Nine hundred names in the parish ledger, every one of them crossed through
+        in the same careful hand.<br><br>
+        A hundred and thirteen years later the cliff is failing and the Ordnance Survey wants the mine charted
+        before it drops into the sea. They sent you, because you map dead places for a living, and because
+        you were the only applicant.<br><br>
+        There is one more name at the bottom of that ledger. It is not crossed out yet. It is yours.
+      </div>
+
+      <h3 class="sec">Built With</h3>
+      <div class="cols">
+        <div class="card"><h4>Light</h4>Real-time shadow casting. Every light in the game builds a visibility polygon from the wall geometry each frame, so corners hide things and doorways throw shafts.</div>
+        <div class="card"><h4>Sound</h4>Every drone, heartbeat, footstep, whisper and note of the lullaby is synthesised live with the Web Audio API. No audio files ship with this game.</div>
+        <div class="card"><h4>Everything else</h4>One HTML page, one stylesheet, plain JavaScript. No engine, no build step, no dependencies. Open the file and it runs.</div>
+      </div>
+
+      <h3 class="sec">Inspirations, Gratefully</h3>
+      <div class="card">
+        The oil that runs out and the sanity that doesn't come back — <em>Amnesia: The Dark Descent</em>.
+        A town that is a confession — <em>Silent Hill 2</em>. Light as the only weapon — <em>Alan Wake</em>.
+        Documents that are the real story — <em>SOMA</em> and <em>Gone Home</em>. The corridor that is never the same
+        corridor twice — <em>P.T.</em> A blind thing that hears you breathe — <em>A Quiet Place</em> by way of
+        <em>Alien: Isolation</em>. And a camera that sees the dead — <em>Fatal Frame</em>.
+      </div>
+
+      <div class="screen-actions"><button class="btn small" data-back="title">Back</button></div>
+    </div>
+  </div>
+
+  <!-- ==================== JOURNAL ==================== -->
+  <div class="screen" id="screen-journal">
+    <div class="screen-inner">
+      <h2 class="panel-title">Field Journal</h2>
+      <p class="panel-lede">W. Halloway, hollow-mapper. Ordnance Survey, Northern Coastal Division.</p>
+      <div class="tabs">
+        <button class="tab on" data-tab="objectives">Objectives</button>
+        <button class="tab" data-tab="documents">Documents</button>
+        <button class="tab" data-tab="people">People</button>
+        <button class="tab" data-tab="controls">Controls</button>
+      </div>
+
+      <div class="tab-panel on" id="tab-objectives">
+        <h3 class="sec">Current</h3>
+        <div class="card" id="j-current">&nbsp;</div>
+        <h3 class="sec">Completed</h3>
+        <div id="j-done" class="empty-note">Nothing yet.</div>
+      </div>
+
+      <div class="tab-panel" id="tab-documents">
+        <div class="doc-list" id="j-docs"></div>
+        <div id="doc-reader">
+          <h4 id="doc-title"></h4>
+          <div class="meta" id="doc-meta"></div>
+          <div class="body" id="doc-body"></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-people">
+        <div class="cols" id="j-people"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-controls">
+        <div class="cols">
+          <div>
+            <div class="ctl-row"><span class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span class="what"><b>Move</b></span></div>
+            <div class="ctl-row"><span class="keys"><kbd>Shift</kbd></span><span class="what"><b>Run</b> — loud</span></div>
+            <div class="ctl-row"><span class="keys"><kbd>Ctrl</kbd></span><span class="what"><b>Creep</b> — quiet</span></div>
+            <div class="ctl-row"><span class="keys"><kbd>Q</kbd></span><span class="what"><b>Hold breath</b> — silent when still</span></div>
+            <div class="ctl-row"><span class="keys"><kbd>E</kbd></span><span class="what"><b>Interact</b></span></div>
+          </div>
+          <div>
+            <div class="ctl-row"><span class="keys"><kbd>L</kbd></span><span class="what"><b>Lantern</b> on / off</span></div>
+            <div class="ctl-row"><span class="keys"><kbd>F</kbd></span><span class="what"><b>Flare</b> — hold</span></div>
+            <div class="ctl-row"><span class="keys"><kbd>R</kbd></span><span class="what"><b>Recorder</b> at resonance points</span></div>
+            <div class="ctl-row"><span class="keys"><kbd>Tab</kbd></span><span class="what"><b>Journal</b></span></div>
+            <div class="ctl-row"><span class="keys"><kbd>Esc</kbd></span><span class="what"><b>Pause</b></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-actions"><button class="btn small primary" id="btn-journal-close">Close Journal &nbsp;<kbd>Tab</kbd></button></div>
+    </div>
+  </div>
+
+  <!-- ==================== PAUSE ==================== -->
+  <div class="screen" id="screen-pause">
+    <div class="screen-inner center">
+      <h2 class="panel-title">Paused</h2>
+      <p class="panel-lede center" style="margin-inline:auto">The dark will wait. It has practice.</p>
+      <div class="menu">
+        <button class="btn primary" id="btn-resume">Resume</button>
+        <button class="btn" id="btn-pause-journal">Field Journal</button>
+        <button class="btn" id="btn-pause-howto">How to Play</button>
+        <button class="btn" id="btn-pause-settings">Settings &amp; Accessibility</button>
+        <button class="btn" id="btn-restart-chapter">Restart Chapter</button>
+        <button class="btn ghost danger" id="btn-quit">Abandon the Round</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PUZZLE ==================== -->
+  <div class="screen" id="screen-puzzle">
+    <div class="screen-inner">
+      <div class="pz-frame">
+        <h2 class="pz-title" id="pz-title"></h2>
+        <p class="pz-desc" id="pz-desc"></p>
+        <div class="pz-stage" id="pz-stage"></div>
+        <div class="pz-status" id="pz-status"></div>
+        <div class="pz-actions" id="pz-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DEATH ==================== -->
+  <div class="screen" id="screen-death">
+    <div class="screen-inner">
+      <h2 class="death-title" id="death-title">HOLLOWED</h2>
+      <p class="death-line" id="death-line"></p>
+      <div class="menu">
+        <button class="btn primary" id="btn-retry">Back to the Last Lamp</button>
+        <button class="btn ghost" id="btn-death-quit">Abandon the Round</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ENDING ==================== -->
+  <div class="screen" id="screen-ending">
+    <div class="screen-inner">
+      <div class="ending-kicker" id="ending-kicker">Ending</div>
+      <h2 class="ending-title" id="ending-title"></h2>
+      <div class="ending-body" id="ending-body"></div>
+      <div class="ending-stats" id="ending-stats"></div>
+      <div class="menu">
+        <button class="btn primary" id="btn-ending-title">Return to Title</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/audio.js"></script>
+<script src="js/lighting.js"></script>
+<script src="js/story.js"></script>
+<script src="js/world.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/puzzles.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
