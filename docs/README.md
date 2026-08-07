@@ -17,9 +17,9 @@ turn-based command structure with a two-body bullet-hell dodging system called *
 
 | Stage | Deliverable | Status |
 | --- | --- | --- |
-| **1** | **Game Design Document** (master) | ✅ **Delivered — awaiting approval** |
-| 2 | Story Bible | ⏸ Pending approval of Stage 1 |
-| 3 | World Bible | ⏸ |
+| **1** | **Game Design Document** (master) | ✅ Approved |
+| **2** | **Story Bible** | ✅ **Delivered — awaiting approval** |
+| 3 | World Bible | ⏸ Pending approval of Stage 2 |
 | 4 | Character Bible | ⏸ |
 | 5 | Combat Systems | ⏸ |
 | 6 | Quest Database | ⏸ |
@@ -59,6 +59,29 @@ Read in order. [Start at the index →](stage-01-game-design-document/00-index.m
 | 15 | [Content Manifest & Scope Ledger](stage-01-game-design-document/15-content-manifest.md) |
 | 16 | [Achievements (78)](stage-01-game-design-document/16-achievements.md) |
 | 17 | [Production Plan & Risk Register](stage-01-game-design-document/17-production-plan.md) |
+
+---
+
+## Stage 2 — Story Bible
+
+[Start at the index →](stage-02-story-bible/00-index.md)
+
+| # | Document |
+| --- | --- |
+| 00 | [Index & Scene Notation](stage-02-story-bible/00-index.md) |
+| 01 | [Cosmology & the Rules of the World](stage-02-story-bible/01-cosmology-and-rules.md) |
+| 02 | [History & the Nine Quiets](stage-02-story-bible/02-history-and-the-nine-quiets.md) |
+| 03 | [Aven & the Voice System](stage-02-story-bible/03-aven-and-the-voice-system.md) |
+| 04 | [Prologue — The Unclaimed](stage-02-story-bible/04-prologue.md) |
+| 05 | [Act I — The Ringing](stage-02-story-bible/05-act-one.md) |
+| 06 | [Act II — The Ledger](stage-02-story-bible/06-act-two.md) |
+| 07 | [Act III — Three Routes](stage-02-story-bible/07-act-three.md) |
+| 08 | [Finale — The Assay](stage-02-story-bible/08-finale.md) |
+| 09 | [Epilogues — All Five Endings](stage-02-story-bible/09-epilogues.md) |
+| 10 | [The Three Petitions](stage-02-story-bible/10-the-three-petitions.md) |
+| 11 | [Foreshadowing & Payoff Ledger](stage-02-story-bible/11-foreshadowing-and-payoffs.md) |
+| 12 | [Themes & the Arguments](stage-02-story-bible/12-themes-and-arguments.md) |
+| 13 | [Continuity Bible](stage-02-story-bible/13-continuity-bible.md) |
 
 ---
 
