@@ -1,11 +1,11 @@
-# SECONDHEART — Godot 4.3 Project (Stage 12)
+# SECONDHEART — Godot 4.3 Project
 
-Implementation of the Tether — the mechanic the whole design rests on, and the
-project's single largest risk (GDD §17.4, R1).
+Two things are playable: **the Prologue** (the story, end to end) and **the Tether
+harness** (the combat mechanic in isolation).
 
-This is deliberately **the first thing built**, before any art, writing, or region
-content, because the go/no-go question is *"is the tether fun for thirty minutes?"*
-and every other deliverable is worthless if the answer is no.
+Neither has art or audio. That is not a placeholder for something prettier — the
+point of building these first is to find out whether the scene and the mechanic
+work *before* anyone spends eighteen months drawing them.
 
 ---
 
@@ -14,12 +14,36 @@ and every other deliverable is worthless if the answer is no.
 Requires **Godot 4.3+**. No addons, no build step.
 
 ```bash
-godot --path game                                  # opens the playable tether harness
-godot --headless --path game res://tests/test_scene.tscn    # 46 unit tests
-godot --headless --path game res://tests/bench_scene.tscn   # bullet subsystem bench
+godot --path game                                             # THE PROLOGUE (default)
+godot --path game res://scenes/weave/weave_test.tscn          # the tether harness
+
+godot --headless --path game res://tests/test_scene.tscn        # 60 unit tests
+godot --headless --path game res://tests/playthrough_scene.tscn # scripted Prologue run
+godot --headless --path game res://tests/bench_scene.tscn       # bullet bench
 ```
 
-### Controls
+## The Prologue
+
+~10 minutes. You wake in a drawer, in an archive of hearts nobody came back for.
+Walk right, read drawers, find Ledgerman Osk, talk to him twice.
+
+| Input | Action |
+| --- | --- |
+| `WASD` / arrows | Walk |
+| `E` | Interact |
+| `Enter` / `E` | Advance dialogue |
+| Click | Pick a dialogue option |
+
+**Two drawers matter and the game never says which.** One is stamped `RESERVED`,
+dated nine hundred years before you were born. One belongs to Ilsabet Vane, whose
+husband declined to collect her — *"I'd only lose it again."*
+
+Talk to Osk about his wife. Then keep talking to him. What happens next is the
+whole game's argument, it takes ninety seconds, and nothing announces it.
+
+---
+
+## The Tether harness — controls
 
 | Input | Action |
 | --- | --- |
@@ -42,6 +66,11 @@ to judge the prototype on.
 
 | System | File | Status |
 | --- | --- | --- |
+| **Dialogue parser** (.sh format) | `systems/dialogue/dialogue_parser.gd` | ✅ 14 tests |
+| **Dialogue runner** | `autoload/dialogue_runner.gd` | ✅ playthrough-tested |
+| **Dialogue UI** | `scenes/ui/dialogue_box.gd` | ✅ runs |
+| **Overworld + interactables** | `systems/overworld/` | ✅ runs |
+| **The Prologue** | `scenes/regions/unc/prologue.gd` | ✅ **playable** |
 | Bullet pool (flat arrays, 4096) | `systems/weave/bullet_system/bullet_pool.gd` | ✅ tested + benched |
 | Spatial grid | `systems/weave/bullet_system/broadphase.gd` | ✅ tested + benched |
 | Pattern interpreter (6 emitters) | `systems/weave/bullet_system/pattern_player.gd` | ✅ runs |
@@ -57,9 +86,9 @@ to judge the prototype on.
 | Companion data (5 profiles) | `data/companions/companion_profile.gd` | ✅ |
 | Enemy data + diagnoses | `data/enemies/enemy_profile.gd` | ✅ |
 
-**Not yet built:** rendering (`MultiMeshInstance2D` — the harness uses `_draw()` for
-now), dialogue compiler, boss director, quests, regions, UI, audio. Those are
-Production A/B work; this is the month-1 prototype.
+**Not yet built:** all art and audio, the command-phase menu, `MultiMeshInstance2D`
+rendering, the boss director, quests, the other 14 regions, and ~95,000 of the
+96,000 words. Those are Production A/B work.
 
 ---
 
