@@ -1,0 +1,83 @@
+; SECONDHEART — Godot 4.x project
+; Engine configuration file.
+
+config_version=5
+
+[application]
+
+config/name="SECONDHEART"
+config/description="A 2D pixel-art RPG about the people you carry."
+run/main_scene="res://scenes/weave/weave_test.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+EventBus="*res://autoload/event_bus.gd"
+GameState="*res://autoload/game_state.gd"
+SaveManager="*res://autoload/save_manager.gd"
+InputRouter="*res://autoload/input_router.gd"
+
+[display]
+
+window/size/viewport_width=480
+window/size/viewport_height=270
+window/size/window_width_override=1440
+window/size/window_height_override=810
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
+
+[physics]
+
+common/physics_ticks_per_second=60
+common/max_physics_steps_per_frame=8
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
+2d/snap/snap_2d_transforms_to_pixel=false
+2d/snap/snap_2d_vertices_to_pixel=false
+
+[input]
+
+move_up={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":87,"pressed":false)
+, Object(InputEventKey,"physical_keycode":4194320,"pressed":false)
+]
+}
+move_down={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":83,"pressed":false)
+, Object(InputEventKey,"physical_keycode":4194322,"pressed":false)
+]
+}
+move_left={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":65,"pressed":false)
+, Object(InputEventKey,"physical_keycode":4194319,"pressed":false)
+]
+}
+move_right={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":68,"pressed":false)
+, Object(InputEventKey,"physical_keycode":4194321,"pressed":false)
+]
+}
+weave_swap={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":32,"pressed":false)
+]
+}
+weave_pull={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194325,"pressed":false)
+]
+}
+weave_plant={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194326,"pressed":false)
+]
+}

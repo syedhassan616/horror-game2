@@ -18,17 +18,17 @@ turn-based command structure with a two-body bullet-hell dodging system called *
 | Stage | Deliverable | Status |
 | --- | --- | --- |
 | **1** | **Game Design Document** (master) | ✅ Approved |
-| **2** | **Story Bible** | ✅ **Delivered — awaiting approval** |
-| 3 | World Bible | ⏸ Pending approval of Stage 2 |
-| 4 | Character Bible | ⏸ |
-| 5 | Combat Systems | ⏸ |
-| 6 | Quest Database | ⏸ |
-| 7 | Dialogue Database | ⏸ |
-| 8 | Music Bible | ⏸ |
-| 9 | Art Bible | ⏸ |
-| 10 | Programming Architecture | ⏸ |
-| 11 | Folder Structure | ⏸ |
-| 12 | Implementation | ⏸ |
+| **2** | **Story Bible** | ✅ Delivered |
+| **3** | **World Bible** | ✅ Delivered |
+| **4** | **Character Bible** | ✅ Delivered |
+| **5** | **Combat Systems** | ✅ Delivered |
+| **6** | **Quest Database** | ✅ Delivered |
+| **7** | **Dialogue Database** | ✅ Delivered |
+| **8** | **Music Bible** | ✅ Delivered |
+| **9** | **Art Bible** | ✅ Delivered |
+| **10** | **Programming Architecture** | ✅ Delivered |
+| **11** | **Folder Structure** | ✅ Delivered |
+| **12** | **Implementation** | ✅ Playable tether prototype — [`game/`](../game/README.md) |
 
 Each stage expands one section of the Stage 1 GDD into full production depth.
 The GDD is the **single source of truth**; later bibles may add, but may not contradict.
@@ -82,6 +82,23 @@ Read in order. [Start at the index →](stage-01-game-design-document/00-index.m
 | 11 | [Foreshadowing & Payoff Ledger](stage-02-story-bible/11-foreshadowing-and-payoffs.md) |
 | 12 | [Themes & the Arguments](stage-02-story-bible/12-themes-and-arguments.md) |
 | 13 | [Continuity Bible](stage-02-story-bible/13-continuity-bible.md) |
+
+---
+
+## Stages 3–12
+
+| Stage | Location |
+| --- | --- |
+| 3 · World Bible | [`stage-03-world-bible/`](stage-03-world-bible/00-index-and-conventions.md) |
+| 4 · Character Bible | [`stage-04-character-bible/`](stage-04-character-bible/00-index-and-schema.md) |
+| 5 · Combat Systems | [`stage-05-combat-systems/`](stage-05-combat-systems/00-formulas-and-frame-data.md) |
+| 6 · Quest Database | [`stage-06-quest-database/`](stage-06-quest-database/00-schema-and-quests-01-18.md) |
+| 7 · Dialogue Database | [`stage-07-dialogue-database/`](stage-07-dialogue-database/00-format-and-compiler.md) |
+| 8 · Music Bible | [`stage-08-music-bible/`](stage-08-music-bible/00-music-bible.md) |
+| 9 · Art Bible | [`stage-09-art-bible/`](stage-09-art-bible/00-art-bible.md) |
+| 10 · Programming Architecture | [`stage-10-programming-architecture/`](stage-10-programming-architecture/00-architecture.md) |
+| 11 · Folder Structure | [`stage-11-folder-structure/`](stage-11-folder-structure/00-folder-structure.md) |
+| 12 · Implementation | [`game/`](../game/README.md) — runs in Godot 4.3, 46 tests passing |
 
 ---
 

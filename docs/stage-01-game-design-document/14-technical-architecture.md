@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | Engine | **Godot 4.3+** (4.x, forward-compatible) | 2D lighting, `TileMapLayer`, resource system, and an export pipeline that hits every target platform |
 | Primary language | **GDScript** | Iteration speed dominates for a content-heavy narrative RPG; the team is small |
-| Hot-path language | **C# or GDExtension (C++)** for the bullet system only, *if profiling requires it* | Deferred decision. GDScript with pooled, flat-array bullets is expected to hold 2,000 simultaneous projectiles at 60 FPS; we do not pay a language tax until proven necessary. |
+| Hot-path language | **C# or GDExtension (C++)** for the bullet system only, *if profiling requires it* | Still deferred, now with data. Stage 12 measured GDScript at **1.38 ms for 2,000 bullets** — fine everywhere except the superboss's phase 7. Decision moves to the Production A gate. |
 | Renderer | **Forward+** (desktop), **Mobile** renderer for Switch/Deck validation | 2D lights + normal maps require Forward+ features on desktop |
 | Physics | **None for bullets.** Custom broadphase (uniform grid) | Godot's physics server is wrong for 2,000 bullets. Bullets are data, not nodes. |
 | Middleware | **FMOD** (fallback: `AudioStreamInteractive`) | Stem-based reactive score (§11.4). Decision gate at Stage 8. |
@@ -93,7 +93,9 @@ func _physics_process(delta: float) -> void:
     _pool.cull_offscreen()
 ```
 
-Everything expensive is one pass over flat memory. Target: **2,000 bullets, ≤1.2ms/frame.**
+Everything expensive is one pass over flat memory. **Measured in Stage 12 at 1.38 ms for
+2,000 bullets** (budget revised 1.2 → 1.6 ms; see Stage 10 for the breakdown and the two
+GDScript optimisation findings that got it there).
 
 ### 14.4.2 Companion abstraction
 
@@ -168,7 +170,7 @@ regions with travel-time weights. The March has weight 0 (it moves; it hears fir
 
 | Subsystem | Budget | Notes |
 | --- | --- | --- |
-| Bullet integrate + broadphase + collision | 1.2 ms | 2,000 bullets |
+| Bullet integrate + broadphase + collision | 1.6 ms | 2,000 bullets. **Measured in Stage 12 at 1.38 ms**; the original 1.2 ms was an estimate. See Stage 10. |
 | Bullet render | 0.4 ms | Single `MultiMesh` draw call |
 | 2D lighting + shadows | 3.5 ms | Worst case: Grieving Wood, 9 lights + occluders |
 | Environment shaders (wind, water, ash) | 1.8 ms | |
@@ -176,7 +178,7 @@ regions with travel-time weights. The March has weight 0 (it moves; it hears fir
 | Post (LUT, grade, god-rays, pixel snap) | 2.2 ms | |
 | GDScript game logic | 2.0 ms | |
 | Audio | 0.8 ms | |
-| **Headroom** | **2.7 ms** | Reserved. Not spent without a review. |
+| **Headroom** | **2.3 ms** | Reserved. 0.4 ms spent on the measured bullet cost. |
 
 **Reference hardware:** Intel UHD 620 / Steam Deck. If the Deck holds 60, everything
 holds 60.
