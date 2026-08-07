@@ -7,7 +7,7 @@ config_version=5
 
 config/name="SECONDHEART"
 config/description="A 2D pixel-art RPG about the people you carry."
-run/main_scene="res://scenes/weave/weave_test.tscn"
+run/main_scene="res://scenes/regions/unc/prologue.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -17,6 +17,7 @@ EventBus="*res://autoload/event_bus.gd"
 GameState="*res://autoload/game_state.gd"
 SaveManager="*res://autoload/save_manager.gd"
 InputRouter="*res://autoload/input_router.gd"
+DialogueRunner="*res://autoload/dialogue_runner.gd"
 
 [display]
 
@@ -84,5 +85,16 @@ weave_plant={
 weave_run={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"physical_keycode":4194325,"pressed":false)
+]
+}
+interact={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":69,"pressed":false)
+, Object(InputEventKey,"physical_keycode":4194309,"pressed":false)
+]
+}
+cancel={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194305,"pressed":false)
 ]
 }

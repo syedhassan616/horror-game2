@@ -26,6 +26,7 @@ func _ready() -> void:
 		BroadphaseTests.new(),
 		GameStateTests.new(),
 		UnknotTests.new(),
+		DialogueTests.new(),
 	]
 
 	for suite in suites:
@@ -338,3 +339,70 @@ class UnknotTests extends Suite:
 		runner.check_eq(sys.options_for(enemy).size(), total,
 			"tried-options reset between encounters")
 		runner.check(sys.is_known(enemy), "learned diagnoses survive the encounter")
+
+
+class DialogueTests extends Suite:
+	func suite_name() -> String:
+		return "Dialogue — the .sh parser and runner"
+
+	func run() -> void:
+		var parser := DialogueParser.new()
+		var res := parser.parse_file("res://data/dialogue/src/prologue.sh")
+
+		runner.check_eq(parser.errors.size(), 0,
+			"the Prologue script parses with no errors")
+
+		# Nodes the Prologue cannot work without.
+		for id in [&"osk_first", &"osk_marren", &"osk_the_sentence",
+				&"osk_requisition", &"drawer_reserved", &"drawer_ilsabet"]:
+			runner.check(res.has_node_id(id), "node exists: %s" % id)
+
+		# Every @goto must land somewhere. A dangling goto is a softlock in a game
+		# whose entire structure is dialogue.
+		var dangling: Array = []
+		for node_id in res.nodes:
+			for op in res.ops(node_id):
+				if op["op"] == DialogueResource.Op.GOTO:
+					if not res.has_node_id(op["target"]):
+						dangling.append("%s -> %s" % [node_id, op["target"]])
+				elif op["op"] == DialogueResource.Op.CHOICE:
+					for o in op["options"]:
+						var t: StringName = o.get("target", &"")
+						if t != &"" and not res.has_node_id(t):
+							dangling.append("%s choice -> %s" % [node_id, t])
+		runner.check_eq(dangling.size(), 0, "no dangling @goto or choice targets %s" % [dangling])
+
+		# Every choice must carry a tone; an untagged choice cannot drive Aven's drift.
+		var untagged := 0
+		var choice_count := 0
+		for node_id in res.nodes:
+			for op in res.ops(node_id):
+				if op["op"] == DialogueResource.Op.CHOICE:
+					for o in op["options"]:
+						choice_count += 1
+						if o.get("tone", "") == "":
+							untagged += 1
+		runner.check_gt(float(choice_count), 0.0, "the script contains choices")
+		runner.check_eq(untagged, 0, "every choice option carries a tone tag")
+
+		# The thesis scene must duck the audio and set the flag.
+		var sentence := res.ops(&"osk_the_sentence")
+		var has_cue := false
+		var has_write := false
+		for op in sentence:
+			if op["op"] == DialogueResource.Op.CUE and op["cue"] == "sever.world":
+				has_cue = true
+			if op["op"] == DialogueResource.Op.WRITE and op.get("key", &"") == &"osk_severed":
+				has_write = true
+		runner.check(has_cue, "S-006 fires the severance cue")
+		runner.check(has_write, "S-006 sets flag:osk_severed")
+
+		# The line the Commonplace memory puzzle asks about, six hours later.
+		var found_mornings := false
+		for op in res.ops(&"osk_why_not"):
+			if op["op"] == DialogueResource.Op.LINE and op["text"].contains("hurts in the mornings"):
+				found_mornings = true
+		runner.check(found_mornings, "Osk's mornings line is in the script, unhighlighted")
+
+		# @once must be honoured, or the severance could replay.
+		runner.check(&"osk_the_sentence" in res.once_nodes, "S-006 is marked @once")
