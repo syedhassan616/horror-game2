@@ -73,11 +73,16 @@ weave_swap={
 }
 weave_pull={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"physical_keycode":4194325,"pressed":false)
+"events": [Object(InputEventKey,"physical_keycode":4194326,"pressed":false)
 ]
 }
 weave_plant={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"physical_keycode":4194326,"pressed":false)
+"events": [Object(InputEventKey,"physical_keycode":4194328,"pressed":false)
+]
+}
+weave_run={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194325,"pressed":false)
 ]
 }

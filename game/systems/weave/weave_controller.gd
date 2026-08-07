@@ -141,7 +141,9 @@ func _tick_input(delta: float) -> void:
 		Input.get_axis(&"move_left", &"move_right"),
 		Input.get_axis(&"move_up", &"move_down")
 	)
-	var running := Input.is_action_pressed(&"weave_pull") == false and Input.is_key_pressed(KEY_SHIFT)
+	# Run is its own action. It used to be derived from "not pulling and Shift held",
+	# which was unreachable once PULL was also bound to Shift — running never worked.
+	var running := Input.is_action_pressed(&"weave_run")
 
 	if Input.is_action_just_pressed(&"weave_swap"):
 		_self.buffer(&"swap")

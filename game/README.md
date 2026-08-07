@@ -27,6 +27,7 @@ godot --headless --path game res://tests/bench_scene.tscn   # bullet subsystem b
 | `Space` | **SWAP** — exchange Self and Ward, 6 i-frames |
 | `Ctrl` | **PULL** — snap Ward to Self |
 | `Alt` | **PLANT** — root the Ward |
+| `Shift` | Run (Self moves at 168 px/s instead of 84) |
 | `1`–`5` | Swap companion (Tilly / Moth / Barro / Sennet / Rue) |
 | `S` | Trigger the Slack Tether set piece |
 | `R` | Reset |
